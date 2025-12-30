@@ -1,471 +1,527 @@
-# BeyondChats Article Automation
+# BeyondChats Article Automation System
 
-> **Production-grade article automation system with web scraping, LLM enhancement, and React frontend**
+> **Production-grade full-stack application** for automated article scraping, AI enhancement, and content management.
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)](https://www.typescriptlang.org/)
-[![NestJS](https://img.shields.io/badge/NestJS-11.0-red)](https://nestjs.com/)
-[![React](https://img.shields.io/badge/React-18.2-blue)](https://reactjs.org/)
-[![Prisma](https://img.shields.io/badge/Prisma-7.2-green)](https://www.prisma.io/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=flat&logo=nestjs&logoColor=white)](https://nestjs.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=flat&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 
-## 📋 Overview
+**Live Demo**: [Frontend](http://localhost:5173) | [API Docs](http://localhost:3001/api)
 
-This system automates the process of scraping articles from BeyondChats blog, enhancing them using LLM (GPT-4/Claude), and displaying original vs enhanced versions in a professional React UI.
+---
 
-### Features
+## 📋 Table of Contents
 
-- 🔍 **Web Scraping**: Automated scraping of BeyondChats blog articles using Puppeteer
-- 🤖 **LLM Enhancement**: Article improvement using OpenAI GPT-4 or Anthropic Claude
-- 📊 **CRUD APIs**: Full REST API with Swagger documentation
-- ⚡ **Job Queue**: Async processing with BullMQ and Redis
-- 🎨 **Modern UI**: React 18 + Vite + Tailwind CSS + TanStack Query
-- 🗄️ **Database**: PostgreSQL with Prisma ORM
-- 📝 **Type Safety**: Full TypeScript coverage across frontend and backend
-- 🐳 **Docker Ready**: Containerized deployment configuration
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Quick Start](#quick-start)
+- [How It Works](#how-it-works)
+- [Environment Variables](#environment-variables)
+- [API Documentation](#api-documentation)
+- [Tech Stack](#tech-stack)
+
+---
+
+## 🎯 Overview
+
+This system automates the entire article enhancement workflow:
+
+1. **Scrapes** articles from BeyondChats blog
+2. **Searches** Google for relevant external references
+3. **Enhances** content using AI (OpenAI GPT-4 / Anthropic Claude)
+4. **Displays** original vs enhanced versions in a responsive UI
+
+**Key Features:**
+- ✅ Automated web scraping with multiple strategies
+- ✅ AI-powered content enhancement with SEO optimization
+- ✅ Asynchronous job processing with retry logic
+- ✅ Side-by-side article comparison UI
+- ✅ Full REST API with Swagger documentation
+- ✅ Production-ready error handling and logging
+
+---
 
 ## 🏗️ Architecture
 
+### System Design
+
 ```
-┌─────────────────┐
-│  React Frontend │ ← User Interface (Vite + Tailwind)
-└────────┬────────┘
-         │ HTTP/REST
-┌────────▼────────┐
-│   NestJS API    │ ← CRUD Operations + Swagger Docs
-└────────┬────────┘
-         │
-    ┌────┴────┬──────────┬──────────┐
-    │         │          │          │
-┌───▼───┐ ┌──▼──┐  ┌────▼────┐ ┌──▼──┐
-│Prisma │ │Redis│  │Puppeteer│ │ LLM │
-│  ORM  │ │Queue│  │ Scraper │ │ API │
-└───┬───┘ └─────┘  └─────────┘ └─────┘
-    │
-┌───▼────────┐
-│ PostgreSQL │
-└────────────┘
+┌─────────────┐      ┌──────────────┐      ┌─────────────┐
+│   React     │─────▶│   NestJS     │─────▶│ PostgreSQL  │
+│  Frontend   │      │   Backend    │      │  Database   │
+│  (Port 5173)│      │  (Port 3001) │      │             │
+└─────────────┘      └──────────────┘      └─────────────┘
+                            │
+                            ├─────▶ Redis (Job Queue)
+                            ├─────▶ OpenAI API (LLM)
+                            ├─────▶ SerpAPI (Search)
+                            └─────▶ Puppeteer (Scraping)
 ```
+
+### Data Flow
+
+```
+1. User triggers scraping
+   └─▶ BeyondChats blog scraped (Puppeteer)
+       └─▶ Articles saved to PostgreSQL
+
+2. User triggers enhancement
+   └─▶ Job added to BullMQ queue
+       └─▶ Google Search for references (SerpAPI)
+           └─▶ Reference content extracted (Cheerio)
+               └─▶ LLM enhancement (OpenAI/Anthropic)
+                   └─▶ Enhanced article saved to DB
+
+3. User views in frontend
+   └─▶ React Query fetches from API
+       └─▶ Side-by-side comparison displayed
+```
+
+### Monorepo Structure
+
+```
+beyondchats-article-automation/
+├── apps/
+│   ├── backend/          # NestJS API
+│   │   ├── src/
+│   │   │   ├── articles/      # CRUD operations
+│   │   │   ├── scraper/       # Web scraping (Strategy pattern)
+│   │   │   ├── automation/    # LLM enhancement pipeline
+│   │   │   │   ├── google-search/
+│   │   │   │   ├── content-scraper/
+│   │   │   │   ├── llm/       # Provider pattern (OpenAI/Anthropic)
+│   │   │   │   └── jobs/      # BullMQ processors
+│   │   │   └── prisma/        # Database service
+│   │   └── prisma/
+│   │       └── schema.prisma  # Database schema
+│   └── frontend/         # React SPA
+│       ├── src/
+│       │   ├── components/    # Reusable UI
+│       │   ├── pages/         # Route pages
+│       │   └── lib/           # API client & hooks
+│       └── tailwind.config.js
+└── docs/                 # Documentation
+```
+
+---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-- **Node.js** >= 20.0.0
-- **PostgreSQL** >= 14
-- **Redis** >= 7 (for job queue)
-- **npm** >= 10.0.0
+- Node.js 18+
+- PostgreSQL 14+
+- Redis 7+
+- Docker (optional, recommended)
 
 ### Installation
 
-1. **Clone the repository**
-   ```bash
-   git clone <your-repo-url>
-   cd beyondchats-article-automation
-   ```
+```bash
+# 1. Clone repository
+git clone https://github.com/yourusername/beyondchats-article-automation.git
+cd beyondchats-article-automation
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+# 2. Install dependencies
+npm install
 
-3. **Set up PostgreSQL database**
-   
-   **Option 1: Docker (Recommended)**
-   ```bash
-   docker run --name beyondchats-db \
-     -e POSTGRES_PASSWORD=password \
-     -e POSTGRES_DB=beyondchats \
-     -p 5432:5432 \
-     -d postgres:16-alpine
-   ```
-   
-   **Option 2: Local PostgreSQL**
-   ```bash
-   createdb beyondchats
-   ```
+# 3. Start PostgreSQL & Redis (Docker)
+docker run --name beyondchats-db -e POSTGRES_PASSWORD=password -e POSTGRES_DB=beyondchats -p 5432:5432 -d postgres:16-alpine
+docker run --name beyondchats-redis -p 6379:6379 -d redis:7-alpine
 
-4. **Set up Redis**
-   ```bash
-   docker run --name beyondchats-redis \
-     -p 6379:6379 \
-     -d redis:7-alpine
-   ```
+# 4. Configure environment
+cd apps/backend
+cp .env.example .env
+# Edit .env with your API keys
 
-5. **Configure environment variables**
-   
-   **Backend:**
-   ```bash
-   cd apps/backend
-   cp .env.example .env
-   ```
-   
-   Edit `apps/backend/.env`:
-   ```env
-   DATABASE_URL="postgresql://user:password@localhost:5432/beyondchats"
-   REDIS_URL="redis://localhost:6379"
-   OPENAI_API_KEY="your_openai_api_key"
-   SERPAPI_KEY="your_serpapi_key"
-   ```
-   
-   **Frontend:**
-   ```bash
-   cd apps/frontend
-   cp .env.example .env
-   ```
+# 5. Setup database
+npm run db:generate
+npm run db:migrate
 
-6. **Generate Prisma Client and run migrations**
-   ```bash
-   cd apps/backend
-   npm run db:generate
-   npm run db:migrate
-   ```
+# 6. Start development servers
+cd ../..
+npm run dev:backend  # http://localhost:3001
+npm run dev:frontend # http://localhost:5173
+```
 
-7. **Start development servers**
-   
-   **Terminal 1 - Backend:**
-   ```bash
-   npm run dev:backend
-   ```
-   
-   **Terminal 2 - Frontend:**
-   ```bash
-   npm run dev:frontend
-   ```
+### Verify Installation
 
-8. **Access the application**
-   - Frontend: http://localhost:5173
-   - Backend API: http://localhost:3001
-   - Swagger Docs: http://localhost:3001/api
+```bash
+# Check backend health
+curl http://localhost:3001
+
+# Check API docs
+open http://localhost:3001/api
+
+# Check frontend
+open http://localhost:5173
+```
+
+---
+
+## 🔧 How It Works
+
+### Phase 1: Web Scraping
+
+**Endpoint**: `POST /api/v1/scraper/scrape-beyondchats`
+
+```typescript
+// Strategy Pattern for extensible scraping
+interface ScraperStrategy {
+  scrape(): Promise<Article[]>;
+}
+
+// BeyondChatsStrategy uses Puppeteer for dynamic content
+// GenericArticleStrategy uses Cheerio for static pages
+```
+
+**Process:**
+1. Puppeteer launches headless browser
+2. Navigates to BeyondChats blog
+3. Detects pagination (last page number)
+4. Extracts: title, content, author, date, URL
+5. Saves to PostgreSQL with `status: ORIGINAL`
+
+### Phase 2: AI Enhancement
+
+**Endpoint**: `POST /api/v1/automation/enhance-all`
+
+```typescript
+// Job Queue with BullMQ for async processing
+const job = await queue.add('enhance', { articleId }, {
+  attempts: 3,
+  backoff: { type: 'exponential', delay: 2000 }
+});
+```
+
+**7-Step Enhancement Pipeline:**
+
+1. **Fetch Original** - Get article from database
+2. **Google Search** - Find top 2 relevant articles (SerpAPI)
+3. **Scrape References** - Extract content from search results
+4. **Prepare Context** - Combine original + references (max 3000 chars)
+5. **LLM Enhancement** - Send to OpenAI/Anthropic with SEO prompt
+6. **Parse Response** - Extract enhanced content + references
+7. **Save Enhanced** - Update database with `status: ENHANCED`
+
+**LLM Prompt Strategy:**
+
+```
+You are an expert SEO content editor. Enhance this article:
+
+GUIDELINES:
+1. Preserve original meaning and key points
+2. Improve readability and structure
+3. Add depth using provided references
+4. Optimize for SEO (keywords, headings)
+5. Maintain professional tone
+
+ORIGINAL ARTICLE:
+{content}
+
+REFERENCE MATERIALS:
+{references}
+
+OUTPUT: Enhanced article in markdown
+```
+
+### Phase 3: Frontend Display
+
+**Tech**: React 18 + TanStack Query + Tailwind CSS
+
+**Key Components:**
+
+- `ArticleListPage` - Grid view with status filtering
+- `ArticleComparison` - Side-by-side original vs enhanced
+- `ArticleCard` - Preview with status badge
+- React Query hooks for automatic caching & refetching
+
+**State Management:**
+
+```typescript
+// TanStack Query for server state
+const { data: articles } = useArticles();
+
+// Automatic background refetching
+// Optimistic updates
+// Loading & error states handled
+```
+
+---
+
+## 🔐 Environment Variables
+
+### Backend (`apps/backend/.env`)
+
+```env
+# Database
+DATABASE_URL="postgresql://postgres:password@localhost:5432/beyondchats"
+
+# Redis
+REDIS_URL="redis://localhost:6379"
+
+# LLM Provider (openai or anthropic)
+LLM_PROVIDER="openai"
+
+# OpenAI
+OPENAI_API_KEY="sk-..."
+OPENAI_MODEL="gpt-4-turbo-preview"
+
+# Anthropic (optional)
+ANTHROPIC_API_KEY="sk-ant-..."
+
+# Google Search
+SERPAPI_KEY="..."
+
+# Server
+PORT=3001
+NODE_ENV="development"
+```
+
+### Frontend (`apps/frontend/.env`)
+
+```env
+VITE_API_URL="http://localhost:3001/api/v1"
+```
+
+---
 
 ## 📚 API Documentation
 
-### Articles Endpoints
+### Interactive Swagger Docs
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/v1/articles` | List all articles (with pagination) |
-| `GET` | `/api/v1/articles/:id` | Get single article |
-| `GET` | `/api/v1/articles/count` | Get article count by status |
-| `POST` | `/api/v1/articles` | Create new article |
-| `PATCH` | `/api/v1/articles/:id` | Update article |
-| `DELETE` | `/api/v1/articles/:id` | Delete article |
+Visit: **http://localhost:3001/api**
 
-### Scraper Endpoints
+### Key Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/v1/scraper/scrape` | Trigger BeyondChats blog scraping |
+#### Articles
 
-### Automation Endpoints
+```bash
+# Get all articles
+GET /api/v1/articles?status=ENHANCED
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/v1/automation/enhance-all` | Enhance all original articles |
-| `POST` | `/api/v1/automation/enhance/:id` | Enhance specific article |
+# Get single article
+GET /api/v1/articles/:id
 
-**Interactive Documentation:** Visit http://localhost:3001/api for full Swagger UI
+# Create article
+POST /api/v1/articles
 
-## 🗂️ Project Structure
+# Update article
+PATCH /api/v1/articles/:id
 
+# Delete article
+DELETE /api/v1/articles/:id
 ```
-beyondchats-article-automation/
-├── apps/
-│   ├── backend/                    # NestJS API
-│   │   ├── src/
-│   │   │   ├── articles/          # CRUD module
-│   │   │   ├── scraper/           # Web scraping
-│   │   │   ├── automation/        # LLM enhancement
-│   │   │   ├── prisma/            # Database service
-│   │   │   ├── config/            # Configuration
-│   │   │   ├── main.ts
-│   │   │   └── app.module.ts
-│   │   ├── prisma/
-│   │   │   └── schema.prisma      # Database schema
-│   │   ├── .env.example
-│   │   └── package.json
-│   │
-│   └── frontend/                   # React app
-│       ├── src/
-│       │   ├── pages/             # Route pages
-│       │   ├── components/        # React components
-│       │   ├── hooks/             # Custom hooks
-│       │   ├── api/               # API client
-│       │   └── main.tsx
-│       ├── .env.example
-│       └── package.json
-│
-├── package.json                    # Root workspace
-├── .prettierrc
-├── .eslintrc.js
-└── README.md
+
+#### Scraper
+
+```bash
+# Scrape BeyondChats blog
+POST /api/v1/scraper/scrape-beyondchats
+
+# Scrape single URL
+POST /api/v1/scraper/scrape-url
+Body: { "url": "https://example.com/article" }
 ```
+
+#### Automation
+
+```bash
+# Enhance all ORIGINAL articles
+POST /api/v1/automation/enhance-all
+
+# Enhance specific article
+POST /api/v1/automation/enhance/:id
+
+# Check job status
+GET /api/v1/automation/jobs/:jobId
+```
+
+---
 
 ## 🛠️ Tech Stack
 
 ### Backend
-- **Framework:** NestJS 11 with TypeScript
-- **Database:** PostgreSQL 16 + Prisma ORM
-- **Job Queue:** BullMQ + Redis
-- **Web Scraping:** Puppeteer + Cheerio
-- **LLM Integration:** OpenAI GPT-4 / Anthropic Claude
-- **Search:** SerpAPI (Google Search)
-- **Validation:** class-validator + class-transformer
-- **Documentation:** Swagger/OpenAPI
+
+| Technology | Purpose |
+|------------|---------|
+| **NestJS** | Enterprise-grade Node.js framework |
+| **Prisma** | Type-safe ORM for PostgreSQL |
+| **BullMQ** | Redis-based job queue |
+| **Puppeteer** | Headless browser for dynamic scraping |
+| **Cheerio** | Fast HTML parsing for static content |
+| **SerpAPI** | Google Search API integration |
+| **OpenAI** | GPT-4 for content enhancement |
+| **Anthropic** | Claude as alternative LLM |
 
 ### Frontend
-- **Framework:** React 18 + TypeScript
-- **Build Tool:** Vite
-- **Routing:** React Router v6
-- **State Management:** TanStack Query (React Query)
-- **Styling:** Tailwind CSS
-- **HTTP Client:** Axios
-- **Icons:** Lucide React
 
-## 📖 Usage Guide
+| Technology | Purpose |
+|------------|---------|
+| **React 18** | UI library with hooks |
+| **Vite** | Fast build tool & dev server |
+| **TanStack Query** | Server state management |
+| **React Router** | Client-side routing |
+| **Tailwind CSS** | Utility-first styling |
+| **Axios** | HTTP client with interceptors |
+| **react-markdown** | Markdown rendering |
 
-### Phase 1: Scraping Articles
+### Database & Infrastructure
 
-1. **Trigger scraping via API:**
-   ```bash
-   curl -X POST http://localhost:3001/api/v1/scraper/scrape
-   ```
-
-2. **Verify articles in database:**
-   ```bash
-   cd apps/backend
-   npm run db:studio
-   ```
-
-3. **Check via API:**
-   ```bash
-   curl http://localhost:3001/api/v1/articles
-   ```
-
-### Phase 2: Enhancing Articles
-
-1. **Enhance all original articles:**
-   ```bash
-   curl -X POST http://localhost:3001/api/v1/automation/enhance-all
-   ```
-
-2. **Enhance specific article:**
-   ```bash
-   curl -X POST http://localhost:3001/api/v1/automation/enhance/{article-id}
-   ```
-
-3. **Monitor job progress in logs**
-
-### Phase 3: Viewing Results
-
-1. Open frontend: http://localhost:5173
-2. Browse article list
-3. Click on enhanced articles to see comparison view
-4. View references used for enhancement
-
-## 🧪 Testing
-
-### Backend Tests
-```bash
-cd apps/backend
-
-# Unit tests
-npm test
-
-# E2E tests
-npm run test:e2e
-
-# Coverage
-npm run test:cov
-```
-
-### Frontend Tests
-```bash
-cd apps/frontend
-
-# Component tests
-npm test
-```
-
-## 🐳 Docker Deployment
-
-### Build and run with Docker Compose
-
-```bash
-docker-compose up -d
-```
-
-This will start:
-- PostgreSQL database
-- Redis
-- Backend API (port 3001)
-- Frontend (port 80)
-
-### Individual containers
-
-**Backend:**
-```bash
-docker build -f docker/backend.Dockerfile -t beyondchats-backend .
-docker run -p 3001:3001 beyondchats-backend
-```
-
-**Frontend:**
-```bash
-docker build -f docker/frontend.Dockerfile -t beyondchats-frontend .
-docker run -p 80:80 beyondchats-frontend
-```
-
-## 🚢 Production Deployment
-
-### Backend (Railway/Render)
-
-1. Connect your GitHub repository
-2. Set environment variables:
-   - `DATABASE_URL`
-   - `REDIS_URL`
-   - `OPENAI_API_KEY`
-   - `SERPAPI_KEY`
-3. Deploy from `apps/backend`
-
-### Frontend (Vercel)
-
-1. Connect your GitHub repository
-2. Set build settings:
-   - **Framework:** Vite
-   - **Root Directory:** `apps/frontend`
-   - **Build Command:** `npm run build`
-   - **Output Directory:** `dist`
-3. Set environment variable:
-   - `VITE_API_URL=https://your-backend-url.com`
-4. Deploy
-
-## 📊 Database Schema
-
-```prisma
-model Article {
-  id             String        @id @default(uuid())
-  title          String
-  content        String        @db.Text
-  sourceUrl      String
-  status         ArticleStatus @default(ORIGINAL)
-  updatedContent String?       @db.Text
-  references     Json?
-  scrapedAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-}
-
-enum ArticleStatus {
-  ORIGINAL
-  PROCESSING
-  ENHANCED
-  FAILED
-}
-```
-
-## 🔧 Configuration
-
-### Environment Variables
-
-**Backend (`apps/backend/.env`):**
-
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `DATABASE_URL` | PostgreSQL connection string | ✅ |
-| `REDIS_URL` | Redis connection string | ✅ |
-| `PORT` | Server port (default: 3001) | ❌ |
-| `OPENAI_API_KEY` | OpenAI API key | ✅ |
-| `SERPAPI_KEY` | SerpAPI key for Google search | ✅ |
-| `LLM_PROVIDER` | `openai` or `anthropic` | ❌ |
-| `PUPPETEER_HEADLESS` | Run browser headless | ❌ |
-| `CORS_ORIGIN` | Allowed frontend origin | ❌ |
-
-**Frontend (`apps/frontend/.env`):**
-
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `VITE_API_URL` | Backend API URL | ✅ |
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📝 Scripts Reference
-
-### Root (Monorepo)
-```bash
-npm run dev:backend        # Start backend dev server
-npm run dev:frontend       # Start frontend dev server
-npm run build              # Build all packages
-npm run test               # Run all tests
-npm run lint               # Lint all packages
-npm run format             # Format code with Prettier
-```
-
-### Backend
-```bash
-npm run dev                # Development mode with watch
-npm run build              # Build for production
-npm run start:prod         # Run production build
-npm run db:migrate         # Run database migrations
-npm run db:studio          # Open Prisma Studio
-npm run db:generate        # Generate Prisma Client
-npm test                   # Run unit tests
-npm run test:e2e           # Run E2E tests
-```
-
-### Frontend
-```bash
-npm run dev                # Development server
-npm run build              # Production build
-npm run preview            # Preview production build
-npm run lint               # Lint code
-```
-
-## 🐛 Troubleshooting
-
-### Database connection issues
-```bash
-# Check PostgreSQL is running
-docker ps | grep postgres
-
-# Test connection
-psql -h localhost -U user -d beyondchats
-```
-
-### Redis connection issues
-```bash
-# Check Redis is running
-docker ps | grep redis
-
-# Test connection
-redis-cli ping
-```
-
-### Prisma Client errors
-```bash
-cd apps/backend
-npm run db:generate
-```
-
-### Port already in use
-```bash
-# Kill process on port 3001 (backend)
-npx kill-port 3001
-
-# Kill process on port 5173 (frontend)
-npx kill-port 5173
-```
-
-## 📄 License
-
-MIT
-
-## 👤 Author
-
-Built for BeyondChats hiring assignment
+| Technology | Purpose |
+|------------|---------|
+| **PostgreSQL** | Primary database |
+| **Redis** | Job queue & caching |
+| **Docker** | Containerization |
+| **TypeScript** | Type safety across stack |
 
 ---
 
-**⭐ If you found this helpful, please star the repository!**
+## 📸 Screenshots
+
+### Article List View
+![Article List](./docs/screenshots/article-list.png)
+*Grid view with status filtering and responsive design*
+
+### Article Comparison
+![Comparison View](./docs/screenshots/comparison.png)
+*Side-by-side original vs enhanced content with references*
+
+### Swagger API Documentation
+![API Docs](./docs/screenshots/swagger.png)
+*Interactive API documentation with try-it-out functionality*
+
+---
+
+## 🎯 Design Decisions
+
+### Why Strategy Pattern for Scraping?
+
+Different websites require different scraping approaches. The Strategy pattern allows:
+- Easy addition of new scrapers without modifying existing code
+- BeyondChats uses Puppeteer (dynamic content)
+- Generic scraper uses Cheerio (faster for static sites)
+
+### Why TanStack Query over Redux?
+
+For server state management:
+- ✅ Automatic caching & background refetching
+- ✅ Built-in loading & error states
+- ✅ Optimistic updates out of the box
+- ✅ Less boilerplate than Redux
+
+### Why BullMQ for Job Processing?
+
+LLM enhancement can take 10-30 seconds per article:
+- ✅ Non-blocking API responses
+- ✅ Retry logic with exponential backoff
+- ✅ Progress tracking
+- ✅ Horizontal scaling capability
+
+### Why Monorepo?
+
+- ✅ Shared TypeScript types between frontend/backend
+- ✅ Single `npm install` for all dependencies
+- ✅ Consistent tooling (ESLint, Prettier)
+- ✅ Easier code sharing and refactoring
+
+---
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+npm test
+
+# Backend unit tests
+npm run test:backend
+
+# Frontend component tests
+npm run test:frontend
+
+# E2E tests
+npm run test:e2e
+```
+
+---
+
+## 🚀 Deployment
+
+### Backend (Railway / Render)
+
+```bash
+# Build
+npm run build:backend
+
+# Start production
+npm run start:backend
+```
+
+### Frontend (Vercel)
+
+```bash
+# Build
+npm run build:frontend
+
+# Preview
+npm run preview:frontend
+```
+
+### Environment Variables
+
+Set these in your deployment platform:
+- `DATABASE_URL` (from Railway PostgreSQL)
+- `REDIS_URL` (from Upstash or Railway)
+- `OPENAI_API_KEY`
+- `SERPAPI_KEY`
+- `VITE_API_URL` (frontend only)
+
+---
+
+## 📖 Documentation
+
+- [Architecture Overview](./docs/ARCHITECTURE.md)
+- [Phase 1: Web Scraping](./docs/PHASE1.md)
+- [Phase 2: LLM Enhancement](./docs/PHASE2.md)
+- [Phase 3: React Frontend](./docs/PHASE3.md)
+- [Production Checklist](./docs/PRODUCTION_CHECKLIST.md)
+
+---
+
+## 🤝 Contributing
+
+This is a hiring assignment project. For production use:
+
+1. Add comprehensive test coverage
+2. Implement rate limiting
+3. Add authentication & authorization
+4. Set up monitoring (Sentry, LogRocket)
+5. Add CI/CD pipeline
+6. Implement WebSocket for real-time job updates
+
+---
+
+## 📝 License
+
+MIT License - see [LICENSE](./LICENSE) file for details
+
+---
+
+## 👤 Author
+
+**Your Name**
+- GitHub: [@yourusername](https://github.com/yourusername)
+- LinkedIn: [Your Profile](https://linkedin.com/in/yourprofile)
+- Email: your.email@example.com
+
+---
+
+## 🙏 Acknowledgments
+
+- BeyondChats for the assignment
+- OpenAI for GPT-4 API
+- NestJS & React communities
+
+---
+
+**Built with ❤️ for BeyondChats Hiring Assignment**
