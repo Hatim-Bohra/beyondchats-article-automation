@@ -16,10 +16,10 @@ import configuration from './config/configuration';
     }),
     PrismaModule,
     ArticlesModule,
-    ScraperModule,
-    AutomationModule,
+    // ScraperModule, // Disabled for Vercel-only deployment (no Puppeteer)
+    // AutomationModule, // Disabled for Vercel-only deployment (no Redis)
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
