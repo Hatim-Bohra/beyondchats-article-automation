@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { ArticlesModule } from './articles/articles.module';
 import { ScraperModule } from './scraper/scraper.module';
+import { AutomationModule } from './automation/automation.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -16,6 +17,7 @@ import configuration from './config/configuration';
     PrismaModule,
     ArticlesModule,
     ScraperModule,
+    AutomationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
