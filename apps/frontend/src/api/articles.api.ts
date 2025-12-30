@@ -1,4 +1,3 @@
-import { apiClient } from './client';
 import { Article, PaginationParams } from '../types/article.types';
 import { MOCK_ARTICLES } from './mockData';
 
