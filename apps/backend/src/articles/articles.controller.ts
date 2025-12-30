@@ -17,9 +17,9 @@ import { UpdateArticleDto } from './dto/update-article.dto';
 import { ArticleStatus } from '@prisma/client';
 
 @ApiTags('articles')
-@Controller('api/v1/articles')
+@Controller('articles')
 export class ArticlesController {
-  constructor(private readonly articlesService: ArticlesService) {}
+  constructor(private readonly articlesService: ArticlesService) { }
 
   @Post()
   @ApiOperation({ summary: 'Create a new article' })
