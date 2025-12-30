@@ -109,7 +109,7 @@ export class AutomationService {
 
       return {
         message: 'Enhancement job queued successfully',
-        jobId: job.id,
+        jobId: job.id!,
       };
     } catch (error) {
       this.logger.error(

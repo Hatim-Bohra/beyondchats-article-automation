@@ -83,7 +83,7 @@ export class BeyondChatsStrategy implements ScraperStrategy {
         const lastPageElement = await page.$(selector);
         if (lastPageElement) {
           const lastPageText = await page.evaluate(
-            (el) => el.textContent,
+            (el: Element) => el.textContent,
             lastPageElement,
           );
           const pageNumber = parseInt(lastPageText?.trim() || '1', 10);
@@ -147,7 +147,7 @@ export class BeyondChatsStrategy implements ScraperStrategy {
         const activeElement = await page.$(selector);
         if (activeElement) {
           const pageText = await page.evaluate(
-            (el) => el.textContent,
+            (el: Element) => el.textContent,
             activeElement,
           );
           const pageNumber = parseInt(pageText?.trim() || '1', 10);
@@ -201,7 +201,7 @@ export class BeyondChatsStrategy implements ScraperStrategy {
         const element = articleElements[i];
 
         try {
-          const article = await page.evaluate((el) => {
+          const article = await page.evaluate((el: any) => {
             // Extract title
             const titleElement =
               el.querySelector('h1') ||
