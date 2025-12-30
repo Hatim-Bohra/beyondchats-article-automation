@@ -13,7 +13,9 @@
         "lint": "npm run lint --workspaces",
         "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
         "db:migrate": "npm run db:migrate --workspace=backend",
-        "db:studio": "npm run db:studio --workspace=backend"
+        "db:migrate": "npm run db:migrate --workspace=backend",
+        "db:studio": "npm run db:studio --workspace=backend",
+        "postinstall": "npm run db:generate --workspace=backend"
     },
     "workspaces": [
         "apps/*",
