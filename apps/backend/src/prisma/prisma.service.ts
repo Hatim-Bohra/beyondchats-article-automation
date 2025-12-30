@@ -12,7 +12,9 @@ export class PrismaService
   }
 
   async onModuleInit() {
-    await this.$connect();
+    // Temporarily disabled to bypass database connection issues
+    // await this.$connect();
+    console.log('PrismaService initialized (database connection bypassed)');
   }
 
   async onModuleDestroy() {

@@ -6,7 +6,7 @@ import { Article, ArticleStatus } from '@prisma/client';
 
 @Injectable()
 export class ArticlesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(createArticleDto: CreateArticleDto): Promise<Article> {
     return this.prisma.article.create({
