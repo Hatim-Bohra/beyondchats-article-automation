@@ -1,12 +1,11 @@
-
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { AppModule } from '../src/app.module';
-import * as express from 'express';
+import express from 'express';
 
 const server = express();
 
-const createNestServer = async (expressInstance) => {
+const createNestServer = async (expressInstance: any) => {
     const app = await NestFactory.create(
         AppModule,
         new ExpressAdapter(expressInstance),
@@ -23,13 +22,8 @@ const createNestServer = async (expressInstance) => {
     await app.init();
 };
 
-export default async function handler(req, res) {
+export default async function handler(req: any, res: any) {
     // Initialize server if needed
-    // Note: Vercel might reuse containers, so we check if initialized
-    // But NestJS init is heavy, let's keep it simple for now
-    // For better performance, we should cache the app instance outside the handler
-    // However, simpler pattern first
-
     if (!server.listeners('request').length) {
         await createNestServer(server);
     }
