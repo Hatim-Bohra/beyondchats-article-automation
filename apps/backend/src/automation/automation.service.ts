@@ -11,7 +11,7 @@ export class AutomationService {
   constructor(
     @InjectQueue('article-enhancement') private enhancementQueue: Queue,
     private readonly articlesService: ArticlesService,
-  ) {}
+  ) { }
 
   /**
    * Enhance all articles with status ORIGINAL
@@ -54,7 +54,7 @@ export class AutomationService {
           },
         );
 
-        jobIds.push(job.id);
+        jobIds.push(job.id!);
         this.logger.log(
           `Queued enhancement job ${job.id} for article ${article.id}`,
         );
@@ -86,6 +86,9 @@ export class AutomationService {
     try {
       // Verify article exists
       const article = await this.articlesService.findOne(articleId);
+      if (!article) {
+        throw new Error(`Article ${articleId} not found`);
+      }
 
       // Queue enhancement job
       const job = await this.enhancementQueue.add(
@@ -132,7 +135,7 @@ export class AutomationService {
       const progress = job.progress;
 
       return {
-        jobId: job.id,
+        jobId: job.id!,
         articleId: job.data.articleId,
         state,
         progress,

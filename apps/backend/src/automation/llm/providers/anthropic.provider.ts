@@ -35,7 +35,12 @@ export class AnthropicProvider implements LLMProvider {
         ],
       });
 
-      const enhancedContent = response.content[0]?.text;
+      const contentBlock = response.content[0];
+      if (!contentBlock || contentBlock.type !== 'text') {
+        throw new Error('No text content returned from Anthropic');
+      }
+
+      const enhancedContent = contentBlock.text;
 
       if (!enhancedContent) {
         throw new Error('No content returned from Anthropic');

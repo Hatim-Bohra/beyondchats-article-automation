@@ -14,7 +14,7 @@ export class GoogleSearchService {
   private readonly serpApiKey: string;
 
   constructor(private readonly configService: ConfigService) {
-    this.serpApiKey = this.configService.get<string>('search.serpApiKey');
+    this.serpApiKey = this.configService.get<string>('search.serpApiKey') || '';
   }
 
   /**

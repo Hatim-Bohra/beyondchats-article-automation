@@ -16,18 +16,26 @@ import { ArticlesModule } from '../articles/articles.module';
     ArticlesModule,
     BullModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        connection: {
-          host: configService.get<string>('redis.url')?.includes('://')
-            ? new URL(configService.get<string>('redis.url')).hostname
-            : 'localhost',
-          port: configService.get<string>('redis.url')?.includes('://')
-            ? parseInt(
-                new URL(configService.get<string>('redis.url')).port || '6379',
-              )
-            : 6379,
-        },
-      }),
+      useFactory: (configService: ConfigService) => {
+        const redisUrl = configService.get<string>('redis.url') || 'redis://localhost:6379';
+        try {
+          const url = new URL(redisUrl);
+          return {
+            connection: {
+              host: url.hostname || 'localhost',
+              port: parseInt(url.port || '6379', 10),
+            },
+          };
+        } catch {
+          // Fallback to localhost if URL parsing fails
+          return {
+            connection: {
+              host: 'localhost',
+              port: 6379,
+            },
+          };
+        }
+      },
     }),
     BullModule.registerQueue({
       name: 'article-enhancement',
@@ -45,4 +53,4 @@ import { ArticlesModule } from '../articles/articles.module';
   ],
   exports: [AutomationService],
 })
-export class AutomationModule {}
+export class AutomationModule { }

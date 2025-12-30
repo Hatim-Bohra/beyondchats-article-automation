@@ -125,7 +125,7 @@ export class ContentScraperService {
    */
   private cleanContent(
     $: cheerio.CheerioAPI,
-    element: cheerio.Cheerio,
+    element: cheerio.Cheerio<any>,
   ): string {
     // Clone to avoid modifying original
     const clone = element.clone();
@@ -143,8 +143,8 @@ export class ContentScraperService {
     // Clean up whitespace
     text = text
       .split('\n')
-      .map((line) => line.trim())
-      .filter((line) => line.length > 0)
+      .map((line: string) => line.trim())
+      .filter((line: string) => line.length > 0)
       .join('\n\n');
 
     // Remove excessive newlines
