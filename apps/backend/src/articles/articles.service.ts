@@ -6,7 +6,7 @@ import { Article, ArticleStatus } from '@prisma/client';
 
 @Injectable()
 export class ArticlesService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async create(createArticleDto: CreateArticleDto): Promise<Article> {
     return this.prisma.article.create({
@@ -20,7 +20,8 @@ export class ArticlesService {
       {
         id: '1',
         title: 'Getting Started with BeyondChats',
-        content: 'This is a sample article about BeyondChats features and capabilities. Learn how to integrate our powerful chat system into your application.',
+        content:
+          'This is a sample article about BeyondChats features and capabilities. Learn how to integrate our powerful chat system into your application.',
         sourceUrl: 'https://beyondchats.com/blog/getting-started',
         status: 'ORIGINAL',
         updatedContent: null,
@@ -31,18 +32,22 @@ export class ArticlesService {
       {
         id: '2',
         title: 'Advanced Chat Features',
-        content: 'Learn about advanced features in BeyondChats including AI-powered responses, custom integrations, and analytics.',
+        content:
+          'Learn about advanced features in BeyondChats including AI-powered responses, custom integrations, and analytics.',
         sourceUrl: 'https://beyondchats.com/blog/advanced-features',
         status: 'ENHANCED',
-        updatedContent: 'Enhanced version with more details about AI-powered chat features, including natural language processing, sentiment analysis, and automated response generation. This updated content provides comprehensive coverage of all advanced capabilities.',
-        references: [{ title: 'AI Chat Guide', url: 'https://example.com/ai-guide' }],
+        updatedContent:
+          'Enhanced version with more details about AI-powered chat features, including natural language processing, sentiment analysis, and automated response generation. This updated content provides comprehensive coverage of all advanced capabilities.',
+        references: [
+          { title: 'AI Chat Guide', url: 'https://example.com/ai-guide' },
+        ],
         scrapedAt: new Date(),
         updatedAt: new Date(),
       },
     ];
 
     if (filters?.status) {
-      return mockArticles.filter(a => a.status === filters.status);
+      return mockArticles.filter((a) => a.status === filters.status);
     }
     return mockArticles;
   }
@@ -53,7 +58,8 @@ export class ArticlesService {
       {
         id: '1',
         title: 'Getting Started with BeyondChats',
-        content: 'This is a sample article about BeyondChats features and capabilities.',
+        content:
+          'This is a sample article about BeyondChats features and capabilities.',
         sourceUrl: 'https://beyondchats.com/blog/getting-started',
         status: 'ORIGINAL',
         updatedContent: null,
@@ -74,7 +80,7 @@ export class ArticlesService {
       },
     ];
 
-    return mockArticles.find(a => a.id === id) || null;
+    return mockArticles.find((a) => a.id === id) || null;
   }
 
   async update(

@@ -11,7 +11,7 @@ export class AutomationService {
   constructor(
     @InjectQueue('article-enhancement') private enhancementQueue: Queue,
     private readonly articlesService: ArticlesService,
-  ) { }
+  ) {}
 
   /**
    * Enhance all articles with status ORIGINAL

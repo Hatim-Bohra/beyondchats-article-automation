@@ -17,7 +17,8 @@ import { ArticlesModule } from '../articles/articles.module';
     BullModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
-        const redisUrl = configService.get<string>('redis.url') || 'redis://localhost:6379';
+        const redisUrl =
+          configService.get<string>('redis.url') || 'redis://localhost:6379';
         try {
           const url = new URL(redisUrl);
           return {
@@ -53,4 +54,4 @@ import { ArticlesModule } from '../articles/articles.module';
   ],
   exports: [AutomationService],
 })
-export class AutomationModule { }
+export class AutomationModule {}

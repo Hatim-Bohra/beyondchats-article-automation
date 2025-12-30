@@ -4,10 +4,13 @@ import { PrismaClient } from '@prisma/client';
 @Injectable()
 export class PrismaService
   extends PrismaClient
-  implements OnModuleInit, OnModuleDestroy {
+  implements OnModuleInit, OnModuleDestroy
+{
   constructor() {
     super({
-      datasourceUrl: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/beyondchats',
+      datasourceUrl:
+        process.env.DATABASE_URL ||
+        'postgresql://postgres:password@localhost:5432/beyondchats',
     });
   }
 

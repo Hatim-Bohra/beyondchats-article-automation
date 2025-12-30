@@ -30,16 +30,14 @@ export class ArticlesController {
 
   @Get()
   @ApiOperation({ summary: 'Get all articles' })
-  @ApiQuery({ name: 'skip', required: false, type: Number })
-  @ApiQuery({ name: 'take', required: false, type: Number })
-  @ApiQuery({ name: 'status', required: false, enum: ArticleStatus })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    enum: ['ORIGINAL', 'PROCESSING', 'ENHANCED', 'FAILED'],
+  })
   @ApiResponse({ status: 200, description: 'Articles retrieved successfully' })
-  findAll(
-    @Query('skip', new DefaultValuePipe(0), ParseIntPipe) skip?: number,
-    @Query('take', new DefaultValuePipe(10), ParseIntPipe) take?: number,
-    @Query('status') status?: ArticleStatus,
-  ) {
-    return this.articlesService.findAll({ skip, take, status });
+  async findAll(@Query('status') status?: string) {
+    return this.articlesService.findAll(status ? { status } : undefined);
   }
 
   @Get('count')
