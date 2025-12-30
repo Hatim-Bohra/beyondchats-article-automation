@@ -25,6 +25,7 @@ const createNestServer = async (expressInstance: any) => {
 };
 
 export default async function handler(req: any, res: any) {
+    console.log('Incoming Request URL:', req.url);
     // Initialize server if needed
     if (!server.listeners('request').length) {
         await createNestServer(server);
