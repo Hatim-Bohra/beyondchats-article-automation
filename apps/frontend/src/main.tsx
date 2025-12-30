@@ -5,7 +5,7 @@ import './styles/globals.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
-        {console.log('App Version: v2-fixed-api')}
         <App />
+        {console.log('App Version: v2-fixed-api')}
     </React.StrictMode>
 );
