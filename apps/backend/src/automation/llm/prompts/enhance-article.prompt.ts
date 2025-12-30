@@ -2,24 +2,26 @@ import { EnhanceArticleParams } from '../llm.interface';
 
 /**
  * Build comprehensive prompt for article enhancement
- * 
+ *
  * This prompt is designed to:
  * 1. Analyze top-ranking articles for structure and depth
  * 2. Enhance the original article to match their quality
  * 3. Preserve original meaning and intent
  * 4. Improve formatting and readability
  */
-export function buildEnhanceArticlePrompt(params: EnhanceArticleParams): string {
-    const {
-        originalTitle,
-        originalContent,
-        reference1Title,
-        reference1Content,
-        reference2Title,
-        reference2Content,
-    } = params;
+export function buildEnhanceArticlePrompt(
+  params: EnhanceArticleParams,
+): string {
+  const {
+    originalTitle,
+    originalContent,
+    reference1Title,
+    reference1Content,
+    reference2Title,
+    reference2Content,
+  } = params;
 
-    return `You are an expert content editor and SEO specialist. Your task is to enhance an article to match the quality and depth of top-ranking articles on Google.
+  return `You are an expert content editor and SEO specialist. Your task is to enhance an article to match the quality and depth of top-ranking articles on Google.
 
 ## ORIGINAL ARTICLE TO ENHANCE
 

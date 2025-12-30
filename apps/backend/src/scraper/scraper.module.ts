@@ -6,9 +6,9 @@ import { GenericArticleStrategy } from './strategies/generic-article.strategy';
 import { ArticlesModule } from '../articles/articles.module';
 
 @Module({
-    imports: [ArticlesModule],
-    controllers: [ScraperController],
-    providers: [ScraperService, BeyondChatsStrategy, GenericArticleStrategy],
-    exports: [ScraperService],
+  imports: [ArticlesModule],
+  controllers: [ScraperController],
+  providers: [ScraperService, BeyondChatsStrategy, GenericArticleStrategy],
+  exports: [ScraperService],
 })
-export class ScraperModule { }
+export class ScraperModule {}

@@ -7,61 +7,69 @@ import { buildEnhanceArticlePrompt } from './prompts/enhance-article.prompt';
 
 @Injectable()
 export class LLMService {
-    private readonly logger = new Logger(LLMService.name);
-    private readonly provider: LLMProvider;
+  private readonly logger = new Logger(LLMService.name);
+  private readonly provider: LLMProvider;
 
-    constructor(
-        private readonly configService: ConfigService,
-        private readonly openaiProvider: OpenAIProvider,
-        private readonly anthropicProvider: AnthropicProvider,
-    ) {
-        // Select provider based on configuration
-        const providerName = this.configService.get<string>('llm.provider', 'openai');
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly openaiProvider: OpenAIProvider,
+    private readonly anthropicProvider: AnthropicProvider,
+  ) {
+    // Select provider based on configuration
+    const providerName = this.configService.get<string>(
+      'llm.provider',
+      'openai',
+    );
 
-        if (providerName === 'anthropic') {
-            this.provider = this.anthropicProvider;
-        } else {
-            this.provider = this.openaiProvider;
-        }
-
-        this.logger.log(`Using LLM provider: ${this.provider.getName()}`);
+    if (providerName === 'anthropic') {
+      this.provider = this.anthropicProvider;
+    } else {
+      this.provider = this.openaiProvider;
     }
 
-    /**
-     * Enhance article using LLM
-     */
-    async enhanceArticle(params: EnhanceArticleParams): Promise<string> {
-        this.logger.log(`Enhancing article: "${params.originalTitle}"`);
+    this.logger.log(`Using LLM provider: ${this.provider.getName()}`);
+  }
 
-        try {
-            // Build comprehensive prompt
-            const prompt = buildEnhanceArticlePrompt(params);
+  /**
+   * Enhance article using LLM
+   */
+  async enhanceArticle(params: EnhanceArticleParams): Promise<string> {
+    this.logger.log(`Enhancing article: "${params.originalTitle}"`);
 
-            // Call LLM
-            const enhancedContent = await this.provider.enhance(prompt);
+    try {
+      // Build comprehensive prompt
+      const prompt = buildEnhanceArticlePrompt(params);
 
-            // Validate response
-            if (!enhancedContent || enhancedContent.length < 100) {
-                throw new Error('Enhanced content is too short or empty');
-            }
+      // Call LLM
+      const enhancedContent = await this.provider.enhance(prompt);
 
-            this.logger.log(`Article enhanced successfully: ${enhancedContent.length} characters`);
+      // Validate response
+      if (!enhancedContent || enhancedContent.length < 100) {
+        throw new Error('Enhanced content is too short or empty');
+      }
 
-            return enhancedContent;
-        } catch (error) {
-            this.logger.error(`Article enhancement failed: ${error.message}`, error.stack);
-            throw error;
-        }
+      this.logger.log(
+        `Article enhanced successfully: ${enhancedContent.length} characters`,
+      );
+
+      return enhancedContent;
+    } catch (error) {
+      this.logger.error(
+        `Article enhancement failed: ${error.message}`,
+        error.stack,
+      );
+      throw error;
     }
+  }
 
-    /**
-     * Add references section to enhanced content
-     */
-    addReferences(
-        enhancedContent: string,
-        references: Array<{ title: string; url: string }>,
-    ): string {
-        const referencesSection = `
+  /**
+   * Add references section to enhanced content
+   */
+  addReferences(
+    enhancedContent: string,
+    references: Array<{ title: string; url: string }>,
+  ): string {
+    const referencesSection = `
 
 ---
 
@@ -72,6 +80,6 @@ This article was enhanced using insights from the following top-ranking articles
 ${references.map((ref, index) => `${index + 1}. [${ref.title}](${ref.url})`).join('\n')}
 `;
 
-        return enhancedContent + referencesSection;
-    }
+    return enhancedContent + referencesSection;
+  }
 }

@@ -1,9 +1,9 @@
 export interface EnhanceArticleJobData {
-    articleId: string;
+  articleId: string;
 }
 
 export interface EnhanceArticleJobResult {
-    success: boolean;
-    articleId: string;
-    error?: string;
+  success: boolean;
+  articleId: string;
+  error?: string;
 }
