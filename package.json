@@ -1,0 +1,39 @@
+{
+    "name": "beyondchats-article-automation",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Article automation system with web scraping, LLM enhancement, and React frontend",
+    "scripts": {
+        "dev:backend": "npm run dev --workspace=backend",
+        "dev:frontend": "npm run dev --workspace=frontend",
+        "build:backend": "npm run build --workspace=backend",
+        "build:frontend": "npm run build --workspace=frontend",
+        "build": "npm run build --workspaces",
+        "test": "npm test --workspaces",
+        "lint": "npm run lint --workspaces",
+        "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+        "db:migrate": "npm run db:migrate --workspace=backend",
+        "db:studio": "npm run db:studio --workspace=backend"
+    },
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
+    "keywords": [
+        "article-automation",
+        "web-scraping",
+        "llm",
+        "nestjs",
+        "react"
+    ],
+    "author": "",
+    "license": "MIT",
+    "devDependencies": {
+        "prettier": "^3.1.1",
+        "typescript": "^5.3.3"
+    },
+    "engines": {
+        "node": ">=20.0.0",
+        "npm": ">=10.0.0"
+    }
+}
