@@ -7,7 +7,7 @@
 [![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=flat&logo=nestjs&logoColor=white)](https://nestjs.com/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=flat&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 
-**Live Demo**: [Frontend](http://localhost:5173) | [API Docs](http://localhost:3001/api)
+**Live Demo**: [Frontend (Vercel)](https://beyondchats-article-automation-back-two.vercel.app/)
 
 ---
 
