@@ -8,11 +8,10 @@
         "dev:frontend": "npm run dev --workspace=frontend",
         "build:backend": "npm run build --workspace=backend",
         "build:frontend": "npm run build --workspace=frontend",
-        "build": "npm run build --workspace=backend && npm run build --workspace=frontend",
+        "build": "npm run db:generate --workspace=backend && npm run build --workspace=frontend",
         "test": "npm test --workspaces",
         "lint": "npm run lint --workspaces",
         "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
-        "db:migrate": "npm run db:migrate --workspace=backend",
         "db:migrate": "npm run db:migrate --workspace=backend",
         "db:studio": "npm run db:studio --workspace=backend",
         "postinstall": "npm run db:generate --workspace=backend"
