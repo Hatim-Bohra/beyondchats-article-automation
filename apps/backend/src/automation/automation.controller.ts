@@ -10,9 +10,9 @@ import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { AutomationService } from './automation.service';
 
 @ApiTags('automation')
-@Controller('api/v1/automation')
+@Controller('automation')
 export class AutomationController {
-  constructor(private readonly automationService: AutomationService) {}
+  constructor(private readonly automationService: AutomationService) { }
 
   @Post('enhance-all')
   @HttpCode(HttpStatus.OK)

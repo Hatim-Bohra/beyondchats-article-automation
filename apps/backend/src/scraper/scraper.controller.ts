@@ -9,9 +9,9 @@ class ScrapeUrlDto {
 }
 
 @ApiTags('scraper')
-@Controller('api/v1/scraper')
+@Controller('automation')
 export class ScraperController {
-  constructor(private readonly scraperService: ScraperService) {}
+  constructor(private readonly scraperService: ScraperService) { }
 
   @Post('scrape-beyondchats')
   @HttpCode(HttpStatus.OK)
